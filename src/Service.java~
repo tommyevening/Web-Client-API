@@ -11,7 +11,7 @@ import java.util.Locale;
 import java.util.stream.Collectors;
 
 public class Service {
-    private final String WEATHER_API_KEY = "<OPENWEATHER API KEY>";
+    private final String WEATHER_API_KEY = "4d0b712cfe32d5c8595dfd2cb312168d";
     private String country;
     private String currencyCode;
     private final Gson gson;
