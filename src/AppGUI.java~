@@ -1,0 +1,67 @@
+import javafx.application.Application;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.scene.layout.GridPane;
+import javafx.scene.web.WebEngine;
+import javafx.scene.web.WebView;
+import javafx.stage.Stage;
+
+public class AppGUI extends Application {
+    private static Service weatherService;
+    private WebView webView;
+    private WebEngine webEngine;
+
+    public static void initService(Service service) {
+        weatherService = service;
+    }
+
+    @Override
+    public void start(Stage primaryStage) {
+        primaryStage.setTitle("Weather and Currency Information");
+
+        GridPane grid = new GridPane();
+        grid.setAlignment(Pos.CENTER);
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(25, 25, 25, 25));
+
+        TextField cityField = new TextField();
+        cityField.setPromptText("Enter city");
+
+        TextArea weatherResult = new TextArea();
+        weatherResult.setEditable(false);
+        weatherResult.setPrefRowCount(3);
+        weatherResult.setWrapText(true);
+
+        webView = new WebView();
+        webEngine = webView.getEngine();
+        webView.setPrefSize(800, 400);
+
+        Button searchButton = new Button("Search");
+        searchButton.setOnAction(e -> {
+            try {
+                String city = cityField.getText().trim();
+                String weatherJson = weatherService.getWeather(city);
+                weatherResult.setText(weatherJson);
+
+                String wikiUrl = "https://en.wikipedia.org/wiki/" + city;
+                webEngine.load(wikiUrl);
+            } catch (Exception ex) {
+                weatherResult.setText("Error: " + ex.getMessage());
+            }
+        });
+
+        grid.add(new Label("City:"), 0, 0);
+        grid.add(cityField, 1, 0);
+        grid.add(searchButton, 1, 1);
+        grid.add(new Label("Weather:"), 0, 2);
+        grid.add(weatherResult, 0, 3, 2, 1);
+        grid.add(webView, 0, 4, 2, 1);
+
+        Scene scene = new Scene(grid, 1000, 800);
+        primaryStage.setScene(scene);
+        primaryStage.show();
+    }
+}
