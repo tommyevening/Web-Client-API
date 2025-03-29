@@ -102,5 +102,3 @@ This project highlights my ability to design and implement desktop applications,
 
 ---
 
-💻 **Ready to explore?** Feel free to check out the code and test the project! 😃
-
