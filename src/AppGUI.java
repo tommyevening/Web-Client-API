@@ -76,7 +76,7 @@ public class AppGUI extends Application {
         Button wikiButton = new Button("Get Wiki");
 
         HBox buttonBox = new HBox(10);
-        buttonBox.getChildren().addAll(weatherButton, rateButton, nbpButton, wikiButton);
+        buttonBox.getChildren().addAll(weatherButton, wikiButton, rateButton, nbpButton);
         buttonBox.setAlignment(Pos.CENTER);
 
         wikiButton.setOnAction(e -> {
