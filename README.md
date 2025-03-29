@@ -1,4 +1,4 @@
-# 🌦️ Web-Client API
+# 🌦️ Web-Client API 💸
 
 ## 🎯 About the Project
 The **Web-Client API** is a desktop application written in **Java** that showcases my skills in:
