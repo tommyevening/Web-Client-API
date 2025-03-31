@@ -86,7 +86,7 @@ public class Service {
             String apiUrl = "https://v6.exchangerate-api.com/v6/" + RATES_API_KEY + "/latest/" + currencyCode;
             String jsonResponse = makeHttpRequest(apiUrl);
             return gson.fromJson(jsonResponse, JsonObject.class)
-                    .getAsJsonObject("conversion_rates")
+                    .getAsJsonObject("rates")
                     .get(targetCurrency)
                     .getAsDouble();
         } catch (Exception e) {
