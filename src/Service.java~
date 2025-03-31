@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.Currency;
 import java.util.Locale;
 import java.util.stream.Collectors;
@@ -42,7 +43,8 @@ public class Service {
     public String getWeather(String city) {
         try {
             String apiUrl = "https://api.openweathermap.org/data/2.5/weather?q=" + city + "," + country + "&appid=" + WEATHER_API_KEY + "&units=metric";
-            return makeHttpRequest(apiUrl); //RAW JSON
+            return fetchData(apiUrl); //RAW JSON
+
         } catch (Exception e) {
             return "Error: " + e.getMessage();
         }
@@ -81,12 +83,19 @@ public class Service {
     }
 
 
+    private static String fetchData(String url) throws Exception {
+        try (BufferedReader bufferedReader = new BufferedReader(
+                new InputStreamReader(new URL(url).openStream(), StandardCharsets.UTF_8))) {
+            return bufferedReader.lines().collect(Collectors.joining(System.lineSeparator()));
+        }
+    }
+
     public Double getRateFor(String targetCurrency) {
         try {
             String apiUrl = "https://v6.exchangerate-api.com/v6/" + RATES_API_KEY + "/latest/" + currencyCode;
-            String jsonResponse = makeHttpRequest(apiUrl);
+            String jsonResponse = fetchData(apiUrl);
             return gson.fromJson(jsonResponse, JsonObject.class)
-                    .getAsJsonObject("rates")
+                    .getAsJsonObject("conversion_rates")
                     .get(targetCurrency)
                     .getAsDouble();
         } catch (Exception e) {
