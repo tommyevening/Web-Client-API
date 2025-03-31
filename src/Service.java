@@ -4,7 +4,6 @@ import com.google.gson.JsonObject;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Currency;
@@ -47,28 +46,6 @@ public class Service {
 
         } catch (Exception e) {
             return "Error: " + e.getMessage();
-        }
-    }
-
-
-
-    /*
-    WeatherResponse  fields as a names of JSON parameters:
-        *getMain -> WeatherMain: temp, humidity, pressure
-        *getWeather -> WeatherCondition: description
-     */
-    private String formatWeatherResponse(WeatherResponse weather) {
-        return String.format("Temperature: %.2f°C\nConditions: %s\nHumidity: %.1f%%\nPressure: %.1f hPa",
-                weather.getMain().getTemp(),
-                weather.getWeather()[0].getDescription(),
-                weather.getMain().getHumidity(),
-                weather.getMain().getPressure());
-    }
-
-    private static String fetchData(String url) throws Exception {
-        try (BufferedReader bufferedReader = new BufferedReader(
-                new InputStreamReader(new URL(url).openStream(), StandardCharsets.UTF_8))) {
-            return bufferedReader.lines().collect(Collectors.joining(System.lineSeparator()));
         }
     }
 
@@ -119,6 +96,13 @@ public class Service {
             }
         }
         return null;
+    }
+
+    private static String fetchData(String url) throws Exception {
+        try (BufferedReader bufferedReader = new BufferedReader(
+                new InputStreamReader(new URL(url).openStream(), StandardCharsets.UTF_8))) {
+            return bufferedReader.lines().collect(Collectors.joining(System.lineSeparator()));
+        }
     }
 
     public String getCurrencyCode() {

@@ -4,7 +4,6 @@ import com.google.gson.JsonObject;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Currency;
@@ -50,49 +49,9 @@ public class Service {
         }
     }
 
-
-
-    /*
-    WeatherResponse  fields as a names of JSON parameters:
-        *getMain -> WeatherMain: temp, humidity, pressure
-        *getWeather -> WeatherCondition: description
-     */
-    private String formatWeatherResponse(WeatherResponse weather) {
-        return String.format("Temperature: %.2f°C\nConditions: %s\nHumidity: %.1f%%\nPressure: %.1f hPa",
-                weather.getMain().getTemp(),
-                weather.getWeather()[0].getDescription(),
-                weather.getMain().getHumidity(),
-                weather.getMain().getPressure());
-    }
-
-
-
-    private String makeHttpRequest(String apiUrl) throws Exception {
-        URL url = new URL(apiUrl);
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setRequestMethod("GET");
-
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
-            StringBuilder response = new StringBuilder();
-            String line;
-            while ((line = reader.readLine()) != null) {
-                response.append(line);
-            }
-            return response.toString();
-        }
-    }
-
-
-    private static String fetchData(String url) throws Exception {
-        try (BufferedReader bufferedReader = new BufferedReader(
-                new InputStreamReader(new URL(url).openStream(), StandardCharsets.UTF_8))) {
-            return bufferedReader.lines().collect(Collectors.joining(System.lineSeparator()));
-        }
-    }
-
     public Double getRateFor(String targetCurrency) {
         try {
-            String apiUrl = "https://v6.exchangerate-api.com/v6/" + RATES_API_KEY + "/latest/" + currencyCode;
+            String apiUrl = "https://v6.exchangerate-api.com/v4/latest/" + currencyCode;
             String jsonResponse = fetchData(apiUrl);
             return gson.fromJson(jsonResponse, JsonObject.class)
                     .getAsJsonObject("conversion_rates")
@@ -137,6 +96,13 @@ public class Service {
             }
         }
         return null;
+    }
+
+    private static String fetchData(String url) throws Exception {
+        try (BufferedReader bufferedReader = new BufferedReader(
+                new InputStreamReader(new URL(url).openStream(), StandardCharsets.UTF_8))) {
+            return bufferedReader.lines().collect(Collectors.joining(System.lineSeparator()));
+        }
     }
 
     public String getCurrencyCode() {
